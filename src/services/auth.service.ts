@@ -47,7 +47,7 @@ class AuthService {
     return findUser;
   }
 
-  public async verify(email: string): Promise<number> {
+  public async verify(email: string): Promise<string> {
     if (isEmpty(email)) throw new HttpException(400, '이메일 정보가 없습니다');
     const findUser: User = await this.users.findUnique({ where: { email } });
     if(findUser) throw new HttpException(400, '이미 가입된 유저입니다');
@@ -63,7 +63,7 @@ class AuthService {
     if (isEmpty(token)) throw new HttpException(400, '인증코드 정보가 없습니다');
     if (isEmpty(id)) throw new HttpException(400, '인증 아이디 정보가 없습니다');
     const verifyData: EmailVerify = await this.emailVerify.findUnique({
-      where: { id: Number(id) }
+      where: { id: id }
     });
     if(!verifyData) throw new HttpException(400, '찾을 수 없는 인증번호 입니다');
     if(verifyData.token !== token) throw new HttpException(400, '인증번호가 올바르지 않습니다');

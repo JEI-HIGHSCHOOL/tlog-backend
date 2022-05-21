@@ -11,15 +11,40 @@ generator client {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
-  name     String
+  id          String        @id @default(uuid())
+  email       String        @unique
+  password    String
+  name        String
+  Plans       Plans[]
+  UserPlan    UserPlan[]
 }
 
 model EmailVerify {
-  id       Int    @id @default(autoincrement())
-  email    String
-  token    String
+  id        String   @id @default(uuid())
+  email     String
+  token     String
   createdAt DateTime
+}
+
+model Plans {
+  id                        String @id @default(uuid())
+  place_id                  String
+  latitude                  Float
+  longitude                 Float
+  place_phone               String
+  place_category_group_name String
+  place_address             String
+  place_name                String
+  plan_id                   String
+  user                      User?   @relation(fields: [userId], references: [id])
+  userId                    String?
+}
+
+model UserPlan {
+  id        String   @id @default(uuid())
+  plan_id   String
+  createdAt DateTime
+  share     Boolean
+  user      User?     @relation(fields: [userId], references: [id])
+  userId    String?
 }
