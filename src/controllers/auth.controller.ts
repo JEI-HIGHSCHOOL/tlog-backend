@@ -57,7 +57,7 @@ class AuthController {
   public EmailVerify = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const email: string = req.body.email
-      const EmailSendData: number = await this.authService.verify(email);
+      const EmailSendData: string = await this.authService.verify(email);
       ResponseWrapper(res, {data: EmailSendData, message: "이메일로 인증번호를 보냈습니다."})
     } catch (error) {
       next(error);

@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { Plan } from '@/dtos/plans.dto';
 import { RequestWithUser } from './auth.interface';
-import { Plans, User } from '@prisma/client';
+import { User, UserPlan } from '@prisma/client';
 
 
 
@@ -26,7 +26,12 @@ export interface DBPlan {
 
 
 export interface PlanWithOwner {
-    plans: Plans[]
+    plans: Plan[]
     user: User[]
+}
+
+export interface PlanWithPlanMetaData extends UserPlan {
+    plans: Plan[]
+    owner?: User
 }
   

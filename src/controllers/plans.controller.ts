@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import { Plans, User } from '@prisma/client';
+import { Plan, User, UserPlan } from '@prisma/client';
 import { CreateUserDto } from '@dtos/users.dto';
 import userService from '@services/plans.service';
 import { RequestWithUser } from '@/interfaces/auth.interface';
-import { RequestUserWithSearchLocation } from '@/interfaces/plans.interface';
+import { PlanWithPlanMetaData, RequestUserWithSearchLocation } from '@/interfaces/plans.interface';
 import ResponseWrapper from '@/utils/responseWrapper';
 
 class PlansController {
@@ -21,7 +21,7 @@ class PlansController {
 
   public getPlan = async (req: RequestWithUser, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const userPlanData: Plans[] = await this.userService.getPlan(req);
+      const userPlanData: PlanWithPlanMetaData = await this.userService.getPlan(req);
 
       ResponseWrapper(res, {data: userPlanData});
     } catch (error) {
