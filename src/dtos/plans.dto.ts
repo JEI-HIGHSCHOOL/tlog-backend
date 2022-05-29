@@ -4,6 +4,9 @@ export class PlanAddDto {
   @IsArray()
   @ArrayMinSize(1)
   plans: Plan[]
+
+  @IsString()
+  title: string
 }
 
 export class Plan {

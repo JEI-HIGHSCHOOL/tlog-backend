@@ -3,8 +3,8 @@ import { PrismaClient, Plan, UserPlan } from '@prisma/client';
 import { CreateUserDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { isEmpty } from '@utils/util';
-import { RequestWithUser } from '@/interfaces/auth.interface';
-import { DBPlan, PlanWithPlanMetaData, RequestUserWithSearchLocation } from '@/interfaces/plans.interface';
+import { RequestWithUser, RequestWithUserCheck } from '@/interfaces/auth.interface';
+import { PlanWithPlanMetaData, RequestUserWithSearchLocation } from '@/interfaces/plans.interface';
 import uuid4 from 'uuid4';
 import PlanLoader from "@/utils/planloader";
 
@@ -14,10 +14,11 @@ class PlanService {
   public user = new PrismaClient().user;
   public planloader = new PlanLoader();
 
-  public async CreatePlan(req: RequestUserWithSearchLocation): Promise<boolean> {
-    const { user, body: { plans } } = req;
+  public async CreatePlan(req: RequestUserWithSearchLocation): Promise<string> {
+    const { user, body: { plans, title } } = req;
     const plan_create_data = await this.userplans.create({
       data: {
+        title: title,
         createdAt: new Date(),
         share: false,
         userId: user.id
@@ -40,11 +41,15 @@ class PlanService {
     await this.plans.createMany({
       data: dbplan
     })
-    return true;
+    return plan_create_data.id;
   }
 
-  public async getPlan(req: RequestWithUser): Promise<PlanWithPlanMetaData> {
+  public async getPlan(req: RequestWithUserCheck): Promise<PlanWithPlanMetaData> {
     return await this.planloader.getPlan(req.params.id, req.user, { plans: true });;
+  }
+
+  public async deletePlan(req: RequestWithUser): Promise<string> {
+    return await this.planloader.deletePlan(req.params.plan_id, req.params.id, req.user);;
   }
 }
 

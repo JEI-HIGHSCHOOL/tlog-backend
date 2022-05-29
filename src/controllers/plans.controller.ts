@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { Plan, User, UserPlan } from '@prisma/client';
 import { CreateUserDto } from '@dtos/users.dto';
 import userService from '@services/plans.service';
-import { RequestWithUser } from '@/interfaces/auth.interface';
+import { RequestWithUser, RequestWithUserCheck } from '@/interfaces/auth.interface';
 import { PlanWithPlanMetaData, RequestUserWithSearchLocation } from '@/interfaces/plans.interface';
 import ResponseWrapper from '@/utils/responseWrapper';
 
@@ -11,7 +11,7 @@ class PlansController {
 
   public createPlan = async (req: RequestUserWithSearchLocation, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const CreatePlanData: boolean = await this.userService.CreatePlan(req);
+      const CreatePlanData: string = await this.userService.CreatePlan(req);
 
       ResponseWrapper(res, {data: CreatePlanData, message: '성공적으로 생성되었습니다'});
     } catch (error) {
@@ -19,7 +19,7 @@ class PlansController {
     }
   };
 
-  public getPlan = async (req: RequestWithUser, res: Response, next: NextFunction): Promise<void> => {
+  public getPlan = async (req: RequestWithUserCheck, res: Response, next: NextFunction): Promise<void> => {
     try {
       const userPlanData: PlanWithPlanMetaData = await this.userService.getPlan(req);
 
@@ -28,6 +28,17 @@ class PlansController {
       next(error);
     }
   };
+
+  public deletePlan = async (req: RequestUserWithSearchLocation, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const deletePlanData: string = await this.userService.deletePlan(req);
+
+      ResponseWrapper(res, {data: deletePlanData, message: '성공적으로 삭제되었습니다'});
+    } catch (error) {
+      next(error);
+    }
+  };
+
 }
 
 export default PlansController;
