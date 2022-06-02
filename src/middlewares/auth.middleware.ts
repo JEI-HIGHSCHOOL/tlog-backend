@@ -15,8 +15,8 @@ const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFun
       const userId = verificationResponse.id;
 
       const users = new PrismaClient().user;
-      const findUser = await users.findUnique({ where: { id: userId } });
-
+      const findUser = await users.findUnique({ where: { id: userId }});
+      findUser.password = undefined;
       if (findUser) {
         req.user = findUser;
         next();

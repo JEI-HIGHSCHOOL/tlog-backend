@@ -23,4 +23,9 @@ export interface PlanWithPlanMetaData extends UserPlan {
     plans: Plan[]
     owner?: User
 }
+
+export interface UserPlanWithOwner {
+    plans: UserPlan[]
+    owner: User
+}
   

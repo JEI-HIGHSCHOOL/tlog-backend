@@ -26,7 +26,7 @@ model EmailVerify {
 }
 
 model Plan {
-  id                        String    @id @default(uuid())
+  id                        String      @id @default(uuid())
   place_id                  String
   latitude                  Float
   longitude                 Float
@@ -35,15 +35,23 @@ model Plan {
   place_address             String
   place_name                String
   planId                    String?
-  plan                      UserPlan? @relation(fields: [planId], references: [id])
+  plan                      UserPlan?   @relation(fields: [planId], references: [id])
+  planImage                 PlanImage[]
+}
+
+model PlanImage {
+  id       String @id @default(uuid())
+  planId   String
+  imageUrl String
+  plan     Plan   @relation(fields: [planId], references: [id])
 }
 
 model UserPlan {
   id        String   @id @default(uuid())
-  title   String
+  title     String
   createdAt DateTime
   share     Boolean
-  owner      User?    @relation(fields: [userId], references: [id])
+  owner     User?    @relation(fields: [userId], references: [id])
   userId    String?
-  plans      Plan[]
+  plans     Plan[]
 }

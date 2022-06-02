@@ -3,7 +3,7 @@ import { Plan, User, UserPlan } from '@prisma/client';
 import { CreateUserDto } from '@dtos/users.dto';
 import userService from '@services/plans.service';
 import { RequestWithUser, RequestWithUserCheck } from '@/interfaces/auth.interface';
-import { PlanWithPlanMetaData, RequestUserWithSearchLocation } from '@/interfaces/plans.interface';
+import { PlanWithPlanMetaData, RequestUserWithSearchLocation, UserPlanWithOwner } from '@/interfaces/plans.interface';
 import ResponseWrapper from '@/utils/responseWrapper';
 
 class PlansController {
@@ -39,6 +39,25 @@ class PlansController {
     }
   };
 
+  public addPlanImage = async (req: RequestWithUser, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const uploadPlanImageData: any = await this.userService.uploadPlanImage(req);
+
+      ResponseWrapper(res, {message: '성공적으로 업로드 되었습니다'});
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getMyPlan = async (req: RequestWithUser, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const userPlanData: UserPlanWithOwner = await this.userService.getMyPlan(req);
+
+      ResponseWrapper(res, {data: userPlanData});
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default PlansController;

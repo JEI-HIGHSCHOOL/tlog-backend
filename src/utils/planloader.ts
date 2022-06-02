@@ -1,10 +1,14 @@
 import { HttpException } from '@/exceptions/HttpException';
-import { PlanWithPlanMetaData } from '@/interfaces/plans.interface';
+import { RequestWithUser } from '@/interfaces/auth.interface';
+import { PlanWithPlanMetaData, UserPlanWithOwner } from '@/interfaces/plans.interface';
 import { Plan, prisma, PrismaClient, User, UserPlan } from '@prisma/client';
+import { Request, request } from 'express';
+import { Multer } from 'multer';
 
 class PlanLoader {
   public plans = new PrismaClient().plan;
   public userplans = new PrismaClient().userPlan;
+  public planImage = new PrismaClient().planImage;
   public user = new PrismaClient().user
 
   public async getPlan(id: string, user: User, include?: getPlanWithType): Promise<PlanWithPlanMetaData> {
@@ -41,6 +45,28 @@ class PlanLoader {
     if(!user || user.id !== plan.plan.userId) throw new HttpException(400, '이 계획을 관리할 권한이 없습니다');
     await this.plans.delete({where: { id }})
     return id;
+  }
+
+  public async getMyPlan(user: User): Promise<UserPlanWithOwner> {
+    const plans = await this.userplans.findMany({
+      where: {
+        userId: user.id
+      },
+      include: {
+        plans: true
+      }
+    })
+    return {plans: plans, owner: user};
+  }
+
+  public async uploadPlanImage(id: string, file: Express.Multer.File): Promise<string> {
+    const planImage = await this.planImage.create({
+      data: {
+        planId: id,
+        imageUrl: file.filename
+      }
+    })
+    return planImage.imageUrl;
   }
 }
 

@@ -4,9 +4,10 @@ import { CreateUserDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { isEmpty } from '@utils/util';
 import { RequestWithUser, RequestWithUserCheck } from '@/interfaces/auth.interface';
-import { PlanWithPlanMetaData, RequestUserWithSearchLocation } from '@/interfaces/plans.interface';
-import uuid4 from 'uuid4';
+import { PlanWithPlanMetaData, RequestUserWithSearchLocation, UserPlanWithOwner } from '@/interfaces/plans.interface';
+import sharp from "sharp"
 import PlanLoader from "@/utils/planloader";
+import fs from 'fs'
 
 class PlanService {
   public plans = new PrismaClient().plan;
@@ -50,6 +51,23 @@ class PlanService {
 
   public async deletePlan(req: RequestWithUser): Promise<string> {
     return await this.planloader.deletePlan(req.params.plan_id, req.params.id, req.user);;
+  }
+
+  public async getMyPlan(req: RequestWithUser): Promise<UserPlanWithOwner> {
+    return await this.planloader.getMyPlan(req.user);
+  }
+
+  public async uploadPlanImage(req: RequestWithUser): Promise<string> {
+    sharp(req.file.path)
+      .resize({ width: 600 })
+      .withMetadata()
+      .toBuffer((err, buffer) => {
+        if (err) throw err;
+        fs.writeFile(req.file.path, buffer, (err) => {
+          if (err) throw err;
+        });
+      });
+    return await this.planloader.uploadPlanImage(req.params.id, req.file);
   }
 }
 
