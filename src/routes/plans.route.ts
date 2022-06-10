@@ -19,6 +19,7 @@ class PlansRoute implements Routes {
   private initializeRoutes() {
     this.router.post(`${this.path}/create`, authMiddleware, validationMiddleware(PlanAddDto, 'body'), this.plansController.createPlan);
     this.router.delete(`${this.path}/:plan_id/:id`, authMiddleware, this.plansController.deletePlan);
+    this.router.get(`${this.path}/:plan_id/:id/detail`, authMiddleware, this.plansController.getPlanDetail);
     this.router.post(`${this.path}/:plan_id/:id/image`, authMiddleware, imageUpload.single('img'), this.plansController.addPlanImage);
     this.router.get(`${this.path}/me`, authMiddleware, this.plansController.getMyPlan);
     this.router.get(`${this.path}/:id`, withAuthMiddleware, this.plansController.getPlan);

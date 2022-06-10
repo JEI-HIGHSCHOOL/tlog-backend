@@ -29,6 +29,16 @@ class PlansController {
     }
   };
 
+  public getPlanDetail = async (req: RequestWithUserCheck, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const planDetailData: Plan = await this.userService.getPlanDetail(req);
+
+      ResponseWrapper(res, {data: planDetailData});
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public deletePlan = async (req: RequestUserWithSearchLocation, res: Response, next: NextFunction): Promise<void> => {
     try {
       const deletePlanData: string = await this.userService.deletePlan(req);

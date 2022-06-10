@@ -49,6 +49,10 @@ class PlanService {
     return await this.planloader.getPlan(req.params.id, req.user, { plans: true });;
   }
 
+  public async getPlanDetail(req: RequestWithUserCheck): Promise<Plan> {
+    return await this.planloader.getPlanDetail(req.params.id, req.user);;
+  }
+
   public async deletePlan(req: RequestWithUser): Promise<string> {
     return await this.planloader.deletePlan(req.params.plan_id, req.params.id, req.user);;
   }
