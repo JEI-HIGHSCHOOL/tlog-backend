@@ -4,10 +4,11 @@ import { CreateUserDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { isEmpty } from '@utils/util';
 import { RequestWithUser, RequestWithUserCheck } from '@/interfaces/auth.interface';
-import { PlanWithPlanMetaData, RequestUserWithSearchLocation, UserPlanWithOwner } from '@/interfaces/plans.interface';
+import { PlanWithOwner, PlanWithPlanMetaData, RequestUserWithSearchLocation, UserPlanWithOwner } from '@/interfaces/plans.interface';
 import sharp from "sharp"
 import PlanLoader from "@/utils/planloader";
 import fs from 'fs'
+import { Request } from 'express';
 
 class PlanService {
   public plans = new PrismaClient().plan;
@@ -19,6 +20,7 @@ class PlanService {
     const { user, body: { plans, title } } = req;
     const plan_create_data = await this.userplans.create({
       data: {
+        like: 0,
         title: title,
         createdAt: new Date(),
         share: false,
@@ -72,6 +74,19 @@ class PlanService {
         });
       });
     return await this.planloader.uploadPlanImage(req.params.id, req.file);
+  }
+
+  public async suggestPlan(): Promise<UserPlan[]> {
+    const plans: UserPlan[] = await this.userplans.findMany({
+      where: {
+        share: true,
+      },
+      orderBy: [{createdAt: 'desc', like: 'desc'}],
+      include: {
+        owner: true,
+      }
+    })
+    return plans;
   }
 }
 

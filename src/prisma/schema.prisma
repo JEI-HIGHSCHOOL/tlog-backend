@@ -48,6 +48,7 @@ model PlanImage {
 
 model UserPlan {
   id        String   @id @default(uuid())
+  like      Int
   title     String
   createdAt DateTime
   share     Boolean
