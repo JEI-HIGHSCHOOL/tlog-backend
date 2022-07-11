@@ -30,7 +30,7 @@ class PlanLoader {
       if(!user) throw new HttpException(400, '이 계획은 공유되지 않았습니다.');
       if(planData.userId !== user.id) throw new HttpException(400, '이 계획은 공유되지 않았습니다.');
     }
-    return planData;
+    return { ...planData, user: user };
   }
 
   public async getPlanDetail(id: string, user: User): Promise<Plan> {

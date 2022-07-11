@@ -22,10 +22,16 @@ export interface PlanWithOwner {
 export interface PlanWithPlanMetaData extends UserPlan {
     plans: Plan[]
     owner?: User
+    user?: User
 }
 
 export interface UserPlanWithOwner {
     plans: UserPlan[]
     owner: User
+}
+
+export interface SuggestPlanData {
+    new: UserPlan[],
+    like: UserPlan[]
 }
   

@@ -4,7 +4,7 @@ import { CreateUserDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { isEmpty } from '@utils/util';
 import { RequestWithUser, RequestWithUserCheck } from '@/interfaces/auth.interface';
-import { PlanWithOwner, PlanWithPlanMetaData, RequestUserWithSearchLocation, UserPlanWithOwner } from '@/interfaces/plans.interface';
+import { PlanWithOwner, PlanWithPlanMetaData, RequestUserWithSearchLocation, SuggestPlanData, UserPlanWithOwner } from '@/interfaces/plans.interface';
 import sharp from "sharp"
 import PlanLoader from "@/utils/planloader";
 import fs from 'fs'
@@ -76,14 +76,16 @@ class PlanService {
     return await this.planloader.uploadPlanImage(req.params.id, req.file);
   }
 
-  public async suggestPlan(): Promise<UserPlan[]> {
-    const plans: UserPlan[] = await this.userplans.findMany({
+  public async suggestPlan(): Promise<SuggestPlanData> {
+    const likePlans: UserPlan[] = await this.userplans.findMany({
       where: {
         share: true,
       },
-      orderBy: {
+      orderBy: [{
         like: 'desc'
-      },
+      }, {
+        createdAt: 'desc'
+      }],
       include: {
         owner: {
           select: {
@@ -101,7 +103,32 @@ class PlanService {
         }
       }
     })
-    return plans;
+
+    const newPlans: UserPlan[] = await this.userplans.findMany({
+      where: {
+        share: true,
+      },
+      orderBy: [{
+        createdAt: 'desc'
+      }],
+      include: {
+        owner: {
+          select: {
+            name: true,
+            email: true,
+            id: true
+          }
+        },
+        plans: {
+          select: {
+            planImage: true,
+            place_name: true,
+            place_id: true
+          }
+        }
+      }
+    })
+    return { like: likePlans, new: newPlans };
   }
 }
 

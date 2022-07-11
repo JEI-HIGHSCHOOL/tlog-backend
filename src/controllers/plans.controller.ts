@@ -3,7 +3,7 @@ import { Plan, User, UserPlan } from '@prisma/client';
 import { CreateUserDto } from '@dtos/users.dto';
 import PlanService from '@services/plans.service';
 import { RequestWithUser, RequestWithUserCheck } from '@/interfaces/auth.interface';
-import { PlanWithPlanMetaData, RequestUserWithSearchLocation, UserPlanWithOwner } from '@/interfaces/plans.interface';
+import { PlanWithPlanMetaData, RequestUserWithSearchLocation, SuggestPlanData, UserPlanWithOwner } from '@/interfaces/plans.interface';
 import ResponseWrapper from '@/utils/responseWrapper';
 
 class PlansController {
@@ -21,7 +21,7 @@ class PlansController {
 
   public suggestPlan = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const SuggestPlanData: UserPlan[] = await this.planService.suggestPlan();
+      const SuggestPlanData: SuggestPlanData = await this.planService.suggestPlan();
 
       ResponseWrapper(res, {data: SuggestPlanData});
     } catch (error) {
