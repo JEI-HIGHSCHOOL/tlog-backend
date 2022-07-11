@@ -81,9 +81,24 @@ class PlanService {
       where: {
         share: true,
       },
-      orderBy: [{createdAt: 'desc', like: 'desc'}],
+      orderBy: {
+        like: 'desc'
+      },
       include: {
-        owner: true,
+        owner: {
+          select: {
+            name: true,
+            email: true,
+            id: true
+          }
+        },
+        plans: {
+          select: {
+            planImage: true,
+            place_name: true,
+            place_id: true
+          }
+        }
       }
     })
     return plans;
