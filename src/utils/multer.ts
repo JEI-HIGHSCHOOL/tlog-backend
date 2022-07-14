@@ -15,14 +15,17 @@ const s3 = new S3({
 const ImageStorage = multerS3({
   s3: s3,
   bucket: "tlogcdn",
+  contentType: multerS3.AUTO_CONTENT_TYPE,
   acl: 'public-read',
+  key: function(req: RequestWithUser, file, cb) {
+    cb(null, `images/${req.user.id}_${Date.now()}.jpg`);  
+  },
   metadata: function(req, file, cb) {
     cb(null, {
-      fieldName: file.fieldname
+      fieldName: file.fieldname,
+      fileOriginalName: file.originalname
     })
   },
-  key: function(req: RequestWithUser, file, cb) {
-    cb(null, `${req.user.id}_${Date.now()}.jpg`);  }
 })
 
 export const imageUpload = multer({

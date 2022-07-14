@@ -63,7 +63,7 @@ class PlansController {
     try {
       const uploadPlanImageData: any = await this.planService.uploadPlanImage(req);
 
-      ResponseWrapper(res, {message: '성공적으로 업로드 되었습니다'});
+      ResponseWrapper(res, {message: '성공적으로 업로드 되었습니다', data: uploadPlanImageData});
     } catch (error) {
       next(error);
     }

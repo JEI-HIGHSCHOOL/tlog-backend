@@ -64,16 +64,7 @@ class PlanService {
   }
 
   public async uploadPlanImage(req: RequestWithUser): Promise<string> {
-    sharp(req.file.path)
-      .resize({ width: 600 })
-      .withMetadata()
-      .toBuffer((err, buffer) => {
-        if (err) throw err;
-        fs.writeFile(req.file.path, buffer, (err) => {
-          if (err) throw err;
-        });
-      });
-    return await this.planloader.uploadPlanImage(req.params.id, req.file);
+    return await this.planloader.uploadPlanImage(req.params.id, req.file as Express.MulterS3.File);
   }
 
   public async suggestPlan(): Promise<SuggestPlanData> {

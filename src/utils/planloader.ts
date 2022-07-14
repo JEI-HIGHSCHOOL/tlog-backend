@@ -75,11 +75,11 @@ class PlanLoader {
     return {plans: plans, owner: user};
   }
 
-  public async uploadPlanImage(id: string, file: Express.Multer.File): Promise<string> {
+  public async uploadPlanImage(id: string, file: Express.MulterS3.File): Promise<string> {
     const planImage = await this.planImage.create({
       data: {
         planId: id,
-        imageUrl: file.filename
+        imageUrl: file.key
       }
     })
     return planImage.imageUrl;
