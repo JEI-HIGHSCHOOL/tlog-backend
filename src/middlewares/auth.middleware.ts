@@ -24,7 +24,7 @@ const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFun
         next(new HttpException(401, '잘못된 유저 토큰입니다'));
       }
     } else {
-      next(new HttpException(404, '유저 토큰정보가 없습니다'));
+      next(new HttpException(401, '유저 토큰정보가 없습니다'));
     }
   } catch (error) {
     next(new HttpException(401, '유저 토큰정보가 없습니다'));
